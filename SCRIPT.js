@@ -1,4 +1,4 @@
-// Função auxiliar para mapear strings
+// Função auxiliar para mapear strings (desofuscada para tornar mais legível)
 function _0x5f3e(code) {
     const mapping = {
         0x1e0: "100",
@@ -84,34 +84,48 @@ async function hackMUITextarea(parentElement, valueToSet) {
     }, 150);
 }
 
+// Função para gerenciar solicitações com problemas de CORS
+async function fetchWithCorsProxy(url, options = {}) {
+    const proxyUrl = "https://cors-anywhere.herokuapp.com/"; // Proxy para evitar problemas de CORS
+    const fullUrl = proxyUrl + url;
+
+    try {
+        const response = await fetch(fullUrl, options);
+        if (!response.ok) throw new Error(`Erro na solicitação CORS: ${response.status}`);
+        return response.json();
+    } catch (error) {
+        console.error("[ERROR] Erro ao realizar fetch com proxy CORS:", error);
+        throw error;
+    }
+}
+
 // Função para obter resposta da API de IA
 async function get_ai_response(inputText) {
     const apiKey = "AIzaSyCmnToMeEugtd6M4I61pkYAvnWW27HMYdg"; // Chave de API
     const model = "gemini-1.5-flash";
-    try {
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: inputText }] }],
-                    generationConfig: {
-                        temperature: 1,
-                        topP: 0.95,
-                        topK: 40,
-                        maxOutputTokens: 2048,
-                    },
-                }),
-            }
-        );
 
-        if (!response.ok) throw new Error(`Erro na API: ${response.status}`);
-        const result = await response.json();
-        if (!result.candidates || !result.candidates[0] || !result.candidates[0].content) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    const body = JSON.stringify({
+        contents: [{ parts: [{ text: inputText }] }],
+        generationConfig: {
+            temperature: 1,
+            topP: 0.95,
+            topK: 40,
+            maxOutputTokens: 2048,
+        },
+    });
+
+    try {
+        const response = await fetchWithCorsProxy(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: body,
+        });
+
+        if (!response.candidates || !response.candidates[0] || !response.candidates[0].content) {
             throw new Error("Resposta inválida da API");
         }
-        return result.candidates[0].content;
+        return response.candidates[0].content;
     } catch (error) {
         console.error("[ERROR] Falha ao obter resposta da IA:", error);
         throw error;
