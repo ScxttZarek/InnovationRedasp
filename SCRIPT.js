@@ -1,4 +1,4 @@
-// Função auxiliar para mapear strings (desofuscada para tornar mais legível)
+// Função auxiliar para mapear strings
 function _0x5f3e(code) {
     const mapping = {
         0x1e0: "100",
@@ -19,7 +19,7 @@ function _0x5f3e(code) {
     return mapping[code] || code;
 }
 
-// Decodificação desnecessária foi removida
+// Função para manipular um campo de texto (textarea)
 async function hackMUITextarea(parentElement, valueToSet) {
     const inputElement = parentElement.querySelector("textarea");
 
@@ -84,9 +84,9 @@ async function hackMUITextarea(parentElement, valueToSet) {
     }, 150);
 }
 
-// API de geração de texto
+// Função para obter resposta da API de IA
 async function get_ai_response(inputText) {
-    const apiKey = "AIzaSyCmnToMeEugtd6M4I61pkYAvnWW27HMYdg";
+    const apiKey = "AIzaSyCmnToMeEugtd6M4I61pkYAvnWW27HMYdg"; // Chave de API
     const model = "gemini-1.5-flash";
     try {
         const response = await fetch(
@@ -118,7 +118,7 @@ async function get_ai_response(inputText) {
     }
 }
 
-// Função principal de verificação
+// Função principal para verificar e gerar a redação
 async function verificarRedacao() {
     const editorElement = document.querySelector("textarea");
     if (!editorElement) {
@@ -140,5 +140,5 @@ async function verificarRedacao() {
     await hackMUITextarea(editorElement, text);
 }
 
-// Execução automática
+// Execução automática ao carregar o script
 verificarRedacao();
